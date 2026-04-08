@@ -173,6 +173,38 @@ char * infix_to_postfix(char *infix){
     return postfix;
 }
 
+int postfix_evaluation(char *postfix){
+    Stack<int> st;
+    for(int i=0; postfix[i] != '\0'; i++){
+        if(isOperand(postfix[i])){
+            st.push(postfix[i] - '0');      // only way to push the integer and not character '3', type casting would put 51 as well
+        }else{
+            int x2 = st.pop();
+            int x1 = st.pop();
+            int result;
+            switch (postfix[i])
+            {
+                case '+':
+                    result = x1 + x2;
+                    break;
+                case '-':
+                    result = x1 - x2;
+                    break;
+                case '*':
+                    result = x1 * x2;
+                    break;
+                case '/':
+                    result = x1 / x2;
+                    break;
+                default:
+                    break;
+            }
+            st.push(result);
+        }
+    }
+    return st.pop();
+}
+
 int main() {
     // *********************** Stack ADT ***********************
     // Stack<float> st;
@@ -198,6 +230,11 @@ int main() {
     char *postfix = infix_to_postfix(infix2);
     cout<<"Infix Expression : "<<infix2<<endl;
     cout<<"Postfix Expression : "<<postfix<<endl;
+
+    // ********************** Evaluation of that postfix expression *************
+    char infix3[] = "3*5+6/2-4";
+    char *postfix2 = infix_to_postfix(infix3);
+    cout<<"Evaluation : "<<postfix_evaluation(postfix2)<<endl;
 
     return 0;
 }
