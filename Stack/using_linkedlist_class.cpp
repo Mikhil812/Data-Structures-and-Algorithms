@@ -24,19 +24,19 @@ class Stack{
             }
         }
 
-        void push(int x){
-            Node *t = new Node();
-            if(t==NULL){
+        void push(int x){ 
+            if(isFull()){
                 cout<<"Stack Overflow"<<endl;
                 return ;
             }
+            Node *t = new Node();
             t->data = x;
             t->next = top;
             top = t;
         }
         
         int pop(){
-            if(top == NULL){
+            if(isEmpty()){
                 cout<<"Nothing in stack"<<endl;
                 return -1;
             }
@@ -65,6 +65,19 @@ class Stack{
                 cout<<p->data<<endl;
                 p = p->next;
             }
+        }
+
+        bool isEmpty(){
+            if(top == NULL)
+                return true;
+            return false;
+        }
+
+        bool isFull(){
+            Node *t = new Node();
+            if(t==NULL)
+                return true;
+            return false;
         }
 };
 
