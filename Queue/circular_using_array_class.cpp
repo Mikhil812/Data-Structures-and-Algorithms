@@ -17,9 +17,19 @@ class Queue{
         ~Queue(){
             delete []A;
         }
+
+        bool isEmpty(){
+            return front == rear;
+        }
+
+        bool isFull(){
+            if((rear+1)%size == front)
+                return true;
+            return false;
+        }
         
         void enqueue(int x){
-            if((rear+1)%size == front){
+            if(isFull()){
                 cout<<"Queue Overflow"<<endl;
                 return ;
             }
@@ -28,7 +38,7 @@ class Queue{
         }
 
         int dequeue(){
-            if(front == rear){
+            if(isEmpty()){
                 cout<<"Queue empty, can't delete"<<endl;
                 return -1;
             }
