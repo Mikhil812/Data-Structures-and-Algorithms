@@ -3,6 +3,7 @@
 // b. run that exe: .\program.exe
 
 #include "Queue.h"
+#include "Stack.h"
 #include <iostream>
 using namespace std;
 
@@ -41,6 +42,7 @@ class Tree{
                 delete p;
             }
         }
+    
     public:
         Tree(){
             root = nullptr;
@@ -100,22 +102,83 @@ class Tree{
             postOrder(root);
         }
 
+        void iterative_preOrder(){
+            Stack<Node *> st(100);
+            Node *t = root;
+            while(t!=NULL || !st.isEmpty()){
+                if(t!=NULL){
+                    cout<<t->data<<" ";
+                    st.push(t);
+                    t = t->lchild;
+                }else{
+                    t = st.pop();
+                    t = t->rchild;
+                }
+            }
+        }
+
+        void iterative_inOrder(){
+            Stack<Node *> st(100);
+            Node *t = root;
+            while(t!=NULL || !st.isEmpty()){
+                if(t!=NULL){
+                    st.push(t);
+                    t = t->lchild;
+                }else{
+                    t = st.pop();
+                    cout<<t->data<<" ";
+                    t = t->rchild;
+                }
+            }
+        }
+
+        void iterative_postOrder(){
+            Stack<long int> st(100);
+            long int temp;
+            Node *t = root;
+            while(t!=NULL || !st.isEmpty()){
+                if(t!=NULL){
+                    st.push((long int)t);
+                    t = t->lchild;
+                }else{
+                    temp = st.pop();
+                    if(temp > 0){
+                        st.push(-temp);
+                        t = ((Node *)temp)->rchild;
+                    }else{
+                        cout<<((Node *)(-1 * temp))->data<<" ";
+                        t = nullptr;
+                    }
+                }
+            }
+        }
 };
 
 int main() {
+    // int A[] = {8, 3, 4, 9, 5, 7, 2};
+    // Tree t(A);
     Tree t;
     t.createTree();
 
     cout<<"PreOrder Traversal : "<<endl;
     t.preOrder();
     cout<<endl;
+    cout<<"Iterative PreOrder Traversal : "<<endl;
+    t.iterative_preOrder();
+    cout<<endl;
 
     cout<<"InOrder Traversal : "<<endl;
     t.inOrder();
     cout<<endl;
+    cout<<"Iterative InOrder Traversal : "<<endl;
+    t.iterative_inOrder();
+    cout<<endl;
 
     cout<<"PostOrder Traversal : "<<endl;
     t.postOrder();
+    cout<<endl;
+    cout<<"Iterative PostOrder Traversal : "<<endl;
+    t.iterative_postOrder();
     cout<<endl;
 
     return 0;
