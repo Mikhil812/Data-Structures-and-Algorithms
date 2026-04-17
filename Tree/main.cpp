@@ -152,6 +152,21 @@ class Tree{
                 }
             }
         }
+
+        void levelOrder(){
+            Node *t;
+            Queue q(100);
+            q.enqueue(root);
+
+            while(!q.isEmpty()){
+                t = q.dequeue();
+                cout<<t->data<<" ";
+                if(t->lchild)
+                    q.enqueue(t->lchild);
+                if(t->rchild)
+                    q.enqueue(t->rchild);
+            }
+        }
 };
 
 int main() {
@@ -179,6 +194,10 @@ int main() {
     cout<<endl;
     cout<<"Iterative PostOrder Traversal : "<<endl;
     t.iterative_postOrder();
+    cout<<endl;
+
+    cout<<"LevelOrder Traversal : "<<endl;
+    t.levelOrder();
     cout<<endl;
 
     return 0;
