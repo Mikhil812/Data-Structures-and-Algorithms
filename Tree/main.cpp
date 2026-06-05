@@ -167,38 +167,77 @@ class Tree{
                     q.enqueue(t->rchild);
             }
         }
+
+        int searchInorder(int *arr, int inStart, int inEnd, int data){
+            for(int i=inStart; i<=inEnd; i++){
+                if(arr[i] == data)
+                    return i;
+            }
+            return -1;
+        }
+
+        void generate_from_traversal(int *preorder, int *inorder, int n)
+        {
+            root = generate_from_traversal(preorder, inorder, 0, n-1);
+        }
+
+        Node * generate_from_traversal(int *preorder, int *inorder, int inStart, int inEnd){
+            static int preOrderIndex = 0;
+            
+            if(inStart > inEnd){
+                return nullptr;
+            }
+
+            Node *temp = new Node();
+            temp->data = preorder[preOrderIndex++];
+
+            if(inStart == inEnd){
+                return temp;
+            }
+
+            int splitIndex = searchInorder(inorder, inStart, inEnd, temp->data);
+            temp->lchild = generate_from_traversal(preorder, inorder, inStart, splitIndex-1);
+            temp->rchild = generate_from_traversal(preorder, inorder, splitIndex+1, inEnd);
+
+            return temp;
+        }
 };
 
 int main() {
-    // int A[] = {8, 3, 4, 9, 5, 7, 2};
-    // Tree t(A);
-    Tree t;
-    t.createTree();
+    // Tree t;
+    // t.createTree();
 
-    cout<<"PreOrder Traversal : "<<endl;
-    t.preOrder();
-    cout<<endl;
-    cout<<"Iterative PreOrder Traversal : "<<endl;
-    t.iterative_preOrder();
-    cout<<endl;
+    // cout<<"PreOrder Traversal : "<<endl;
+    // t.preOrder();
+    // cout<<endl;
+    // cout<<"Iterative PreOrder Traversal : "<<endl;
+    // t.iterative_preOrder();
+    // cout<<endl;
 
-    cout<<"InOrder Traversal : "<<endl;
-    t.inOrder();
-    cout<<endl;
-    cout<<"Iterative InOrder Traversal : "<<endl;
-    t.iterative_inOrder();
-    cout<<endl;
+    // cout<<"InOrder Traversal : "<<endl;
+    // t.inOrder();
+    // cout<<endl;
+    // cout<<"Iterative InOrder Traversal : "<<endl;
+    // t.iterative_inOrder();
+    // cout<<endl;
 
-    cout<<"PostOrder Traversal : "<<endl;
-    t.postOrder();
-    cout<<endl;
-    cout<<"Iterative PostOrder Traversal : "<<endl;
-    t.iterative_postOrder();
-    cout<<endl;
+    // cout<<"PostOrder Traversal : "<<endl;
+    // t.postOrder();
+    // cout<<endl;
+    // cout<<"Iterative PostOrder Traversal : "<<endl;
+    // t.iterative_postOrder();
+    // cout<<endl;
 
-    cout<<"LevelOrder Traversal : "<<endl;
-    t.levelOrder();
-    cout<<endl;
+    // cout<<"LevelOrder Traversal : "<<endl;
+    // t.levelOrder();
+    // cout<<endl;
+
+    cout<<"Generate Tree from Traversal : "<<endl;
+    int preorder[] = {4, 7, 9, 6, 3, 2, 5, 8, 1};
+    int inorder[] = {7, 6, 9, 3, 4, 5, 8, 2, 1};
+    Tree t2;
+    t2.generate_from_traversal(preorder, inorder, sizeof(inorder)/sizeof(inorder[0]));
+    t2.preOrder();
 
     return 0;
 }
