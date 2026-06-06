@@ -42,6 +42,45 @@ class Tree{
                 delete p;
             }
         }
+
+        int count_nodes(Node *p){
+            if(p == NULL)
+                return 0;
+            
+            int x = count_nodes(p->lchild);
+            int y = count_nodes(p->rchild);
+            return x + y + 1;
+        }
+
+        int height(Node *p){
+            if(p == NULL)
+                return 0;
+            int x = height(p->lchild);
+            int y = height(p->rchild);
+            if(x > y)
+                return x + 1;
+            else
+                return y + 1;
+        }
+
+        int count_nodes_deg(Node *p){
+            if(p == NULL)
+                return 0;
+            
+            // if(p->lchild && p->rchild)    // Condition for degree 2
+            // if(!p->lchild && !p->rchild)  // Condition for degree 0
+            // if(p->lchild || p->rchild)    // Condition for degree both
+            // if((!p->lchild && p->rchild) || (p->lchild && !p->rchild))  // Condition for degree 1
+            // if(!p->lchild ^ !p->rchild)     // Same as above
+
+            // if(p->lchild) means if(p->lchild != NULL)
+            // if(!p->lchild) means if(p->lchild == NULL)
+            
+            if(!p->lchild ^ !p->rchild)
+                return count_nodes_deg(p->lchild) + count_nodes_deg(p->rchild) + 1; 
+            else
+                return count_nodes_deg(p->lchild) + count_nodes_deg(p->rchild);
+        }
     
     public:
         Tree(){
@@ -201,43 +240,71 @@ class Tree{
 
             return temp;
         }
+
+        int count_nodes(){
+            count_nodes(root);
+        }
+
+        int height(){
+            height(root);
+        }
+
+        int count_nodes_deg(){
+            count_nodes_deg(root);
+        }
 };
 
 int main() {
-    // Tree t;
-    // t.createTree();
+    Tree t;
+    t.createTree();
 
-    // cout<<"PreOrder Traversal : "<<endl;
-    // t.preOrder();
-    // cout<<endl;
-    // cout<<"Iterative PreOrder Traversal : "<<endl;
-    // t.iterative_preOrder();
-    // cout<<endl;
+    cout<<"PreOrder Traversal : "<<endl;
+    t.preOrder();
+    cout<<endl;
+    cout<<"Iterative PreOrder Traversal : "<<endl;
+    t.iterative_preOrder();
+    cout<<endl;
 
-    // cout<<"InOrder Traversal : "<<endl;
-    // t.inOrder();
-    // cout<<endl;
-    // cout<<"Iterative InOrder Traversal : "<<endl;
-    // t.iterative_inOrder();
-    // cout<<endl;
+    cout<<"InOrder Traversal : "<<endl;
+    t.inOrder();
+    cout<<endl;
+    cout<<"Iterative InOrder Traversal : "<<endl;
+    t.iterative_inOrder();
+    cout<<endl;
 
-    // cout<<"PostOrder Traversal : "<<endl;
-    // t.postOrder();
-    // cout<<endl;
-    // cout<<"Iterative PostOrder Traversal : "<<endl;
-    // t.iterative_postOrder();
-    // cout<<endl;
+    cout<<"PostOrder Traversal : "<<endl;
+    t.postOrder();
+    cout<<endl;
+    cout<<"Iterative PostOrder Traversal : "<<endl;
+    t.iterative_postOrder();
+    cout<<endl;
 
-    // cout<<"LevelOrder Traversal : "<<endl;
-    // t.levelOrder();
-    // cout<<endl;
+    cout<<"LevelOrder Traversal : "<<endl;
+    t.levelOrder();
+    cout<<endl;
 
-    cout<<"Generate Tree from Traversal : "<<endl;
-    int preorder[] = {4, 7, 9, 6, 3, 2, 5, 8, 1};
-    int inorder[] = {7, 6, 9, 3, 4, 5, 8, 2, 1};
-    Tree t2;
-    t2.generate_from_traversal(preorder, inorder, sizeof(inorder)/sizeof(inorder[0]));
-    t2.preOrder();
+    // cout<<"Generate Tree from Traversal : "<<endl;
+    // int preorder[] = {4, 7, 9, 6, 3, 2, 5, 8, 1};
+    // int inorder[] = {7, 6, 9, 3, 4, 5, 8, 2, 1};
+    // Tree t2;
+    // t2.generate_from_traversal(preorder, inorder, sizeof(inorder)/sizeof(inorder[0]));
+    // t2.preOrder();
+
+    cout<<"Number of Nodes in the Tree : "<<endl;
+    cout<<t.count_nodes();
+    cout<<endl;
+
+    cout<<"Height of a Tree : "<<endl;
+    cout<<t.height()-1;
+    cout<<endl;
+
+    cout<<"Level of a Tree : "<<endl;
+    cout<<t.height();
+    cout<<endl;
+
+    cout<<"Couting nodes with a specific degree : "<<endl;
+    cout<<t.count_nodes_deg();
+    cout<<endl;
 
     return 0;
 }
