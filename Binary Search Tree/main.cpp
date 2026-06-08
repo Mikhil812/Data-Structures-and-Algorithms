@@ -1,4 +1,5 @@
 #include <iostream>
+#include "Stack.h"
 using namespace std;
 
 class Node
@@ -178,6 +179,40 @@ class BST
                 p = p->lchild;
             return p;
         }
+
+        void generate_from_preorder(int preorder[], int n){
+            Stack<Node *> st(100);
+            int i=0;
+            root = new Node();
+            root->data = preorder[i++];
+            root->lchild = root->rchild = nullptr;
+
+            Node *p = root;
+            Node *t;
+            while(i < n){
+                // Left Child Case : 
+                if(preorder[i] < p->data){
+                    t = new Node();
+                    t->data = preorder[i++];
+                    t->lchild = t->rchild = nullptr;
+                    p->lchild = t;
+
+                    st.push(p);
+                    p = t;
+                }else{
+                    if(preorder[i] > p->data && preorder[i] < (st.isEmpty() ? 32767 : st.stackTop()->data)){
+                        t = new Node();
+                        t->data = preorder[i++];
+                        t->lchild = t->rchild = nullptr;
+                        p->rchild = t;
+
+                        p = t;
+                    }else{
+                        p = st.pop();
+                    }
+                }
+            }
+        }
 };
 
 int main(){
@@ -224,6 +259,16 @@ int main(){
         cout<<"Element found : "<<temp2->data<<endl;
     else
         cout<<"Element not found "<<endl;
+
+    cout<<"Generating BST from only preorder : "<<endl;
+    BST t3;
+    int preorder[] = {30, 20, 10, 15, 25, 40, 50, 45};
+    int n = sizeof(preorder)/sizeof(preorder[0]);
+
+    t3.generate_from_preorder(preorder, n);
+    cout<<"Inorder Traversal to confirm : "<<endl;
+    t3.inorder();
+    cout<<endl;
 
     return 0;
 }
