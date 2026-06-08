@@ -48,6 +48,43 @@ class BST
                 return Rsearch(t->rchild, data);
         }
 
+        Node* Rdelete(Node *p, int data){
+            if(p == nullptr)
+                return nullptr;
+            if(p->lchild == nullptr && p->rchild == nullptr){
+                if(p==root)
+                    root = nullptr;
+                delete p;
+                return nullptr;
+            }
+            if(data < p->data)
+                p->lchild = Rdelete(p->lchild, data);
+            else if(data > p->data)
+                p->rchild = Rdelete(p->rchild, data);
+            else{                                           // match
+                if(height(p->lchild) > height(p->rchild)){
+                    // Inorder Predecessor
+                    Node *q = inorder_predecessor(p->lchild);
+                    p->data = q->data;
+                    p->lchild = Rdelete(p->lchild, q->data);
+                }else{
+                    // Inorder Successor
+                    Node *q = inorder_successor(p->rchild);
+                    p->data = q->data;
+                    p->rchild = Rdelete(p->rchild, q->data);
+                }
+            }
+            return p;
+        }
+
+        int height(Node *p){
+            if(p == nullptr)
+                return 0;
+            int x = height(p->lchild);
+            int y = height(p->rchild);
+            return x > y ? x + 1 : y + 1;
+        }
+
         void destroy(Node *p){
             if(p){
                 destroy(p->lchild);
@@ -120,7 +157,27 @@ class BST
 
         Node* Rsearch(int data){
             return Rsearch(root, data);
-        }   
+        }
+        
+        void Rdelete(int data){
+            root = Rdelete(root, data);
+        }
+
+        int height(){
+            height(root);
+        }
+
+        Node* inorder_predecessor(Node *p){
+            while(p != nullptr && p->rchild != nullptr)
+                p = p->rchild;
+            return p;
+        }
+
+        Node* inorder_successor(Node *p){
+            while(p != nullptr && p->lchild != nullptr)
+                p = p->lchild;
+            return p;
+        }
 };
 
 int main(){
@@ -153,6 +210,11 @@ int main(){
     t2.Rinsert(30);
 
     cout<<"Inorder Traversal : (should be sorted)"<<endl;
+    t2.inorder();
+    cout<<endl;
+
+    cout<<"Deletion of a node : "<<endl;
+    t2.Rdelete(10);
     t2.inorder();
     cout<<endl;
 
