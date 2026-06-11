@@ -40,7 +40,7 @@ class AVL_Tree
                 return LRRotation(p);
             else if(BalanceFactor(p) == -2 && BalanceFactor(p->rchild) == -1)
                 return RRRotation(p);
-            else if(BalanceFactor(p) == -2 && BalanceFactor(p->lchild) == 1)
+            else if(BalanceFactor(p) == -2 && BalanceFactor(p->rchild) == 1)
                 return RLRotation(p);
 
             return p;
@@ -67,7 +67,7 @@ class AVL_Tree
             }
         }
 
-        Node * Rinsert(int value){
+        void * Rinsert(int value){
             root = Rinsert(root, value);
         }
 
@@ -78,7 +78,7 @@ class AVL_Tree
             if(p && p->lchild)
                 hl = p->lchild->height;
             else 
-                hl - 0;
+                hl = 0;
 
             // Similarly : 
             hr = (p && p->rchild) ? p->rchild->height : 0;
@@ -93,7 +93,7 @@ class AVL_Tree
             if(p && p->lchild)
                 hl = p->lchild->height;
             else 
-                hl - 0;
+                hl = 0;
 
             // Similarly : 
             hr = (p && p->rchild) ? p->rchild->height : 0;
@@ -120,17 +120,66 @@ class AVL_Tree
         }
 
         Node * LRRotation(Node *p){
-            return nullptr;
+            Node *pl = p->lchild;
+            Node *plr = pl->rchild;         // or p->lchild->rchild;
+
+            // 4 assignments to complete rotation: 
+
+            // Handle plr's children first : 
+            pl->rchild = plr->lchild;
+            p->lchild = plr->rchild;
+            // now handle plr itself
+            plr->lchild = pl;
+            plr->rchild = p;
+
+            // Now Update heights in the right order : 
+            pl->height = nodeHeight(pl);
+            p->height = nodeHeight(p);
+            plr->height = nodeHeight(plr);
+
+            if(root == p)
+                root = plr;
+
+            return plr;
         }
 
         Node * RRRotation(Node *p){
-            return nullptr;
+            Node *pr = p->rchild;
+            Node *prl = pr->lchild;         // or p->rchild->lchild;
+
+            // 2 assignments to complete rotation : 
+            p->rchild = prl;
+            pr->lchild = p;
+
+            p->height = nodeHeight(p);
+            pr->height = nodeHeight(pr);
+
+            if(root == p)
+                root = pr;
+
+            return pr;
         }
 
         Node * RLRotation(Node *p){
-            return nullptr;
-        }
+            Node *pr = p->rchild;
+            Node *prl = pr->lchild;     // or p->rchild->lchild;
 
+            // 4 assignments in which we handle children of prl first : 
+            p->rchild = prl->lchild;
+            pr->lchild = prl->rchild;
+            prl->lchild = p;
+            prl->rchild = pr;
+
+            // Update heights also starting from children : 
+            p->height = nodeHeight(p);
+            pr->height = nodeHeight(pr);
+            prl->height = nodeHeight(prl);
+
+            if(root == p)
+                root = prl;
+            
+            return prl;     // the new king, the new root.
+        }
 };
 
 
@@ -138,13 +187,13 @@ int main(){
 
     AVL_Tree t;
 
-    t.Rinsert(30);
     t.Rinsert(20);
-    t.Rinsert(40);
     t.Rinsert(10);
+    t.Rinsert(30);
     t.Rinsert(25);
-    t.Rinsert(5);
-    t.Rinsert(12);
+    t.Rinsert(40);
+    t.Rinsert(22);
+    t.Rinsert(27);
 
 
     // You need to add breakpoint and debug to check if rotation worked.
