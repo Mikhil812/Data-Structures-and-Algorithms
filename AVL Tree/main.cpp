@@ -46,13 +46,63 @@ class AVL_Tree
             return p;
         }
 
+        Node * Rdelete(Node *p, int value){
+            if(p == nullptr)
+                return nullptr;
+            if(p->lchild == nullptr && p->rchild == nullptr){
+                if(p == root)
+                    root = nullptr;
+                delete p;
+                return nullptr;
+            }
+            if(value < p->data)
+                p->lchild = Rdelete(p->lchild, value);
+            else if(value > p->data)
+                p->rchild = Rdelete(p->rchild, value);
+            else{                                           // match
+                if(nodeHeight(p->lchild) > nodeHeight(p->rchild)){
+                    // Inorder Predecessor : 
+                    Node *q = inorder_predecessor(p->lchild);
+                    p->data = q->data;
+                    p->lchild = Rdelete(p->lchild, q->data);
+                }else{
+                    // Inorder Successor : 
+                    Node *q = inorder_successor(p->rchild);
+                    p->data = q->data;
+                    p->rchild = Rdelete(p->rchild, q->data);
+                }
+            }
+
+            // Now things will change for AVL Tree : Height update and Rotations : 
+            // Height Update : 
+            p->height = nodeHeight(p);
+
+            // 6 types of rotations : L1, L-1, L0, R1, R-1, R0 (they are essentially the same 4)
+
+            // 1. L1 Rotation : BalanceFactor(p->lchild) is 1 -> LLRotation
+            if(BalanceFactor(p) == 2 && BalanceFactor(p->lchild) == 1)
+                return LLRotation(p);
+            else if(BalanceFactor(p) == 2 && BalanceFactor(p->lchild) == -1)    // 2. L-1 Rotation
+                return LRRotation(p);
+            else if(BalanceFactor(p) == 2 && BalanceFactor(p->lchild) == 0)     // 3. L0 Rotation
+                return LLRotation(p);               // or LRRotation(p), any one
+            else if(BalanceFactor(p) == -2 && BalanceFactor(p->rchild) == 1)    // 4. R1 Rotation
+                return RLRotation(p);
+            else if(BalanceFactor(p) == -2 && BalanceFactor(p->rchild) == -1)   // 5. R-1 Rotation
+                return RRRotation(p);
+            else if(BalanceFactor(p) == -2 && BalanceFactor(p->rchild) == 0)    // 6.. R0 Rotation
+                return RRRotation(p);               // or RLRotation(p), any one
+            
+            return p;
+        }
+
     public:
         AVL_Tree(){
             root = nullptr;
         }
 
         ~AVL_Tree(){
-
+            destroy(root);
         }
 
         Node *get_root(){
@@ -67,7 +117,7 @@ class AVL_Tree
             }
         }
 
-        void * Rinsert(int value){
+        void Rinsert(int value){
             root = Rinsert(root, value);
         }
 
@@ -180,6 +230,30 @@ class AVL_Tree
             
             return prl;     // the new king, the new root.
         }
+
+        void Rdelete(int value){
+            root = Rdelete(root, value);
+        }
+
+        Node * inorder_predecessor(Node *p){
+            while(p && p->rchild)
+                p = p->rchild;
+            return p;
+        }
+
+        Node * inorder_successor(Node *p){
+            while(p && p->lchild)
+                p = p->lchild;
+            return p;
+        }
+
+        void destroy(Node *p){
+            if(p){
+                destroy(p->lchild);
+                destroy(p->rchild);
+                delete p;
+            }
+        }
 };
 
 
@@ -187,13 +261,13 @@ int main(){
 
     AVL_Tree t;
 
-    t.Rinsert(20);
     t.Rinsert(10);
+    t.Rinsert(20);
     t.Rinsert(30);
     t.Rinsert(25);
-    t.Rinsert(40);
-    t.Rinsert(22);
+    t.Rinsert(28);
     t.Rinsert(27);
+    t.Rinsert(5);
 
 
     // You need to add breakpoint and debug to check if rotation worked.
