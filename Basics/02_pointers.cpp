@@ -1,3 +1,17 @@
+// don't read it as:
+
+// p is an int star
+
+// Read it as:
+
+// p is a pointer
+
+// and that pointer points to an int
+
+// or even:
+
+// p stores the address of an integer variable
+
 #include <iostream>
 using namespace std;
 
