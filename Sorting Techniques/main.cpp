@@ -46,6 +46,40 @@ void SelectionSort(int A[], int n){
     }
 }
 
+// Func for quick sort -> returns the partitioning position
+int Partition(int A[], int low, int high){
+    int pivot = A[low];           // Pivot element for which we find the right position to swap with
+    int i = low + 1;              // Responsible for finding elements greater than pivot
+    int j = high;                 // Responsible for finding elements smaller than pivot
+
+    while(true){
+        while(i<=j && A[i] <= pivot)
+            i++;
+        while(j>=i && A[j] > pivot)
+            j--;
+        
+        // They have found their respective elements
+        if(i < j){
+            swap(&A[i], &A[j]);
+        }else
+            break;
+    }
+
+    // i > j for the code to reach here so we found the right position for pivot at j : 
+    swap(&A[low], &A[j]);
+
+    return j;
+}
+
+void QuickSort(int A[], int low, int high){
+    // p = partitioning position
+    if(low < high){
+        int p = Partition(A, low, high);
+        QuickSort(A, low, p - 1);
+        QuickSort(A, p + 1, high);
+    }
+}
+
 void display(int A[], int n){
     for(int i=0; i<n; i++){
         cout<<A[i]<<" ";
@@ -70,7 +104,11 @@ int main() {
     display(A, n);
 
     cout<<"3. Selection Sort : "<<endl;
-    SelectionSort(A, n);
+    // SelectionSort(A, n);
+    display(A, n);
+
+    cout<<"4. Quick Sort : "<<endl;
+    QuickSort(A, 0, n-1);
     display(A, n);
 
     return 0;
