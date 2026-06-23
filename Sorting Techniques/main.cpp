@@ -132,6 +132,36 @@ void RecursiveMergeSort(int A[], int low, int high){
     }
 }
 
+void CountSort(int A[], int n){
+    // 1. Find maximum element of A
+    int max = INT32_MIN;
+    for(int i=0; i<n; i++){
+        if(A[i] > max)
+            max = A[i];
+    }
+
+    // 2. Make Hash array and assign it to 0
+    int *H = new int[max + 1];
+    for(int i=0; i< max+1; i++)
+        H[i] = 0;
+
+    // 3. Fill hash array 
+    for(int i=0; i<n; i++){
+        H[A[i]]++;
+    }
+
+    // 4. Put sorted value(index) back into og array
+    int i=0;        // For A
+    int j=0;        // For H
+    while(j < max + 1){
+        if(H[j] > 0){
+            A[i++] = j;
+            H[j]--;
+        }else
+            j++;
+    }
+}
+
 void display(int A[], int n){
     for(int i=0; i<n; i++){
         cout<<A[i]<<" ";
@@ -168,7 +198,11 @@ int main() {
     display(A, n);
 
     cout<<"5 b. Recursive Merge Sort : "<<endl;
-    RecursiveMergeSort(A, 0, n-1);
+    // RecursiveMergeSort(A, 0, n-1);
+    display(A, n);
+
+    cout<<"6. Count Sort : "<<endl;
+    CountSort(A, n);
     display(A, n);
 
     return 0;
