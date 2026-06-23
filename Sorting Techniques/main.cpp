@@ -132,13 +132,18 @@ void RecursiveMergeSort(int A[], int low, int high){
     }
 }
 
-void CountSort(int A[], int n){
-    // 1. Find maximum element of A
+int findMax(int A[], int n){
     int max = INT32_MIN;
     for(int i=0; i<n; i++){
         if(A[i] > max)
             max = A[i];
     }
+    return max;
+}
+
+void CountSort(int A[], int n){
+    // 1. Find maximum element of A
+    int max = findMax(A, n);
 
     // 2. Make Hash array and assign it to 0
     int *H = new int[max + 1];
@@ -160,6 +165,74 @@ void CountSort(int A[], int n){
         }else
             j++;
     }
+
+    // 5. Delete heap memory : H
+    delete [] H;
+}
+
+class Node{
+    public : 
+        int data;
+        Node *next;        
+};
+
+void Insert(Node **bins, int value){
+    Node *temp = new Node();
+    temp->data = value;
+    temp->next = nullptr;
+
+    if (bins[value] == nullptr)
+        bins[value] = temp;
+    else
+    {
+        Node *p = bins[value];
+        Node *q = nullptr;
+        while (p != nullptr)
+        {
+            q = p;
+            p = p->next;
+        }
+        q->next = temp;
+    }
+}
+
+int Delete(Node **bins, int idx){
+    Node *p = bins[idx];
+    bins[idx] = bins[idx]->next;
+
+    int x = p->data;
+    delete p;
+
+    return x;
+}
+
+void BinSort(int A[], int n){
+    // 1. Find Maximum element 
+    int max = findMax(A, n);
+
+    // 2. Create an array of linked lists of size (max + 1)
+    Node **Bins = new Node*[max + 1];
+
+    // 3. Initialize that array with NULLs
+    for(int i=0; i<max+1; i++)
+        Bins[i] = nullptr;
+    
+    // 4. Fill the Hash array with elements from A
+    for(int i=0; i<n; i++){
+        Insert(Bins, A[i]);
+    }
+
+    // 5. Delete elements from bin in order and copy it back in A
+    int i=0, j=0;
+    while(j < max + 1){
+        while(Bins[j] != nullptr){
+            A[i++] = Delete(Bins, j);
+        }
+        j++;
+    }
+
+    // 6. Delete heap memory : bins
+    delete [] Bins;
 }
 
 void display(int A[], int n){
@@ -202,7 +275,11 @@ int main() {
     display(A, n);
 
     cout<<"6. Count Sort : "<<endl;
-    CountSort(A, n);
+    // CountSort(A, n);
+    display(A, n);
+
+    cout<<"7. Bucket/Bin Sort : "<<endl;
+    BinSort(A, n);
     display(A, n);
 
     return 0;
