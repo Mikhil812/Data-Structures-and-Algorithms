@@ -80,6 +80,58 @@ void QuickSort(int A[], int low, int high){
     }
 }
 
+void Merge(int A[], int low, int mid, int high){
+    int i=low;                                  // 2 - way Merging
+    int j = mid + 1;                            // 1st list : 0 to mid    
+    int h = high;                               // 2nd list : mid + 1 to high
+    
+    int *B = new int[high + 1];
+    int k = low;                                  // For the auxilary array
+
+    while(i <= mid && j <= h){
+        if(A[i] < A[j])
+            B[k++] = A[i++];
+        else
+            B[k++] = A[j++];
+    }
+    // When one of the arrays is completed : 
+    while(i <= mid)
+        B[k++] = A[i++];
+    while(j <= h)
+        B[k++] = A[j++];
+
+    // Copy the sorted array back into the original array : 
+    for(int i=low; i<=high; i++)
+        A[i] = B[i];
+
+    delete [] B;
+}
+
+void IterativeMergeSort(int A[], int n){
+    int p;                                      // Responsible for the 2 way merging, skips 2 the first time, then 4 then 8
+    for(p=2; p<=n; p=p*2){
+        for(int i=0; i+p-1 < n; i = i+p){       // i+p-1 : last index of the internal lists
+            int low = i;
+            int high = i+p-1;
+            int mid = (low + high)/2;
+
+            Merge(A, low, mid, high);
+        }
+    }
+    // If Odd number of elements : last number would be remaining so merge it manually
+    if(p/2 < n)
+        Merge(A, 0, p/2 - 1, n-1);
+}
+
+void RecursiveMergeSort(int A[], int low, int high){
+    if(low < high){
+        int mid = (low + high)/2;
+        RecursiveMergeSort(A, low, mid);        // sort left
+        RecursiveMergeSort(A, mid+1, high);         // sort right
+        Merge(A, low, mid, high);                   // merge both
+    }
+}
+
 void display(int A[], int n){
     for(int i=0; i<n; i++){
         cout<<A[i]<<" ";
@@ -108,7 +160,15 @@ int main() {
     display(A, n);
 
     cout<<"4. Quick Sort : "<<endl;
-    QuickSort(A, 0, n-1);
+    // QuickSort(A, 0, n-1);
+    display(A, n);
+
+    cout<<"5 a. Iterative Merge Sort : "<<endl;
+    // IterativeMergeSort(A, n);
+    display(A, n);
+
+    cout<<"5 b. Recursive Merge Sort : "<<endl;
+    RecursiveMergeSort(A, 0, n-1);
     display(A, n);
 
     return 0;
