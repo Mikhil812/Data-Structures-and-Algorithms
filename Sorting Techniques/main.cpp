@@ -298,6 +298,23 @@ void RadixSort(int A[], int n){
     delete [] bins;
 }
 
+void ShellSort(int A[], int n){
+    // Intuition works on insertion sort with only selected elements seperated by gap
+
+    int gap;
+    for(gap = n/2; gap>=1; gap = gap/2){
+        for(int i=gap; i<n; i++){
+            int temp = A[i];    // element to be inserted to the left
+            int j = i - gap;    // element to the left seperated by gap for comparison
+            while(j>=0 && A[j] > temp){
+                A[j+gap] = A[j];
+                j = j-gap;      // this becomes negative so dw 
+            }
+            A[j+gap] = temp;    // here is where negative gets handled
+        }
+    }
+}
+
 void display(int A[], int n){
     for(int i=0; i<n; i++){
         cout<<A[i]<<" ";
@@ -346,7 +363,11 @@ int main() {
     display(A, n);
 
     cout<<"8. Radix Sort : "<<endl;
-    RadixSort(A, n);
+    // RadixSort(A, n);
+    display(A, n);
+
+    cout<<"9. Shell Sort : "<<endl;
+    ShellSort(A, n);
     display(A, n);
 
     return 0;
