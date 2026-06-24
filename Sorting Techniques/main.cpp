@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 using namespace std;
 
 void swap(int* x, int* y){
@@ -235,6 +236,68 @@ void BinSort(int A[], int n){
     delete [] Bins;
 }
 
+int getBinIndex(int x, int idx){
+    return (int)(x / pow(10, idx)) % 10;
+}
+
+// For radix : value is not stored at hash[value], its stored at hash[digit]
+void Insert(Node **bins, int value, int digit){
+    Node *temp = new Node();
+    temp->data = value;
+    temp->next = nullptr;
+
+    if (bins[digit] == nullptr)
+        bins[digit] = temp;
+    else
+    {
+        Node *p = bins[digit];
+        Node *q = nullptr;
+        while (p != nullptr)
+        {
+            q = p;
+            p = p->next;
+        }
+        q->next = temp;
+    }
+}
+
+void RadixSort(int A[], int n){
+    // Since integer -> radix/base of decimal is 10
+
+    // 1. Find no. of digits of max element : 
+    int max = findMax(A, n);
+    int count = 0;
+    while(max != 0){
+        max = max/10;
+        count++;
+    }
+
+    // 2. Create an array of linked lists of size 10 -> 0 to 9, since decimal
+    Node **bins = new Node*[10];
+
+    // 3. Initialize the array with Nulls
+    for(int i=0; i<10; i++)
+        bins[i] = nullptr;
+
+    // 4. Drop the elements into the appt bins and remove "count" number of times
+    for(int pass=0; pass<count; pass++){
+        for(int i=0; i<n; i++){
+            int digit = getBinIndex(A[i], pass);
+            Insert(bins, A[i], digit);          // Different function than bin sort
+        }
+        int i=0, j=0;
+        while(j < 10){
+            while(bins[j] != nullptr){
+                A[i++] = Delete(bins, j);
+            }
+            j++;
+        }
+    }
+
+    // 6. Delete heap memory : bins
+    delete [] bins;
+}
+
 void display(int A[], int n){
     for(int i=0; i<n; i++){
         cout<<A[i]<<" ";
@@ -279,7 +342,11 @@ int main() {
     display(A, n);
 
     cout<<"7. Bucket/Bin Sort : "<<endl;
-    BinSort(A, n);
+    // BinSort(A, n);
+    display(A, n);
+
+    cout<<"8. Radix Sort : "<<endl;
+    RadixSort(A, n);
     display(A, n);
 
     return 0;
