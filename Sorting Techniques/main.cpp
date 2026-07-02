@@ -127,7 +127,7 @@ void IterativeMergeSort(int A[], int n){
 void RecursiveMergeSort(int A[], int low, int high){
     if(low < high){
         int mid = (low + high)/2;
-        RecursiveMergeSort(A, low, mid);        // sort left
+        RecursiveMergeSort(A, low, mid);            // sort left
         RecursiveMergeSort(A, mid+1, high);         // sort right
         Merge(A, low, mid, high);                   // merge both
     }
